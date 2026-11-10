@@ -22,7 +22,7 @@
 </p>
 
 <p align="center">
-  <img src="https://komarev.com/ghpvc/?username=rzkyydev&repo=queue-system&style=flat-square&color=d63062&label=Repository+Visitors" alt="Repository Visitors">
+  <img src="https://komarev.com/ghpvc/?username=rzkyydev&repo=queue-system&style=flat-square&color=d63062&label=Visitors" alt="Repository Visitors">
 </p>
 
 ---
