@@ -376,8 +376,6 @@ See the `LICENSE` file for additional information.
 
 ## Developer
 
-**RzkyyDev**
-
 <p align="center">
   <a href="https://github.com/rzkyydev">
     <img src="https://img.shields.io/badge/GitHub-rzkyydev-181717?style=for-the-badge&logo=github" alt="GitHub">
