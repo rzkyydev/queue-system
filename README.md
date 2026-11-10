@@ -285,7 +285,7 @@ queue-system/
 │       ├── index.html
 │       ├── store.js
 │       └── styles/
-├── website/
+├── docs/
 ├── package.json
 └── README.md
 ```
