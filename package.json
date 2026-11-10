@@ -1,0 +1,64 @@
+{
+  "name": "queue-system",
+  "version": "1.2.0",
+  "description": "TikTok Live Queue System for OBS",
+  "main": "src/main/index.js",
+  "author": {
+    "name": "RzkyyDev",
+    "url": "https://github.com/rzkyydev"
+  },
+  "copyright": "© 2026 RzkyyDev. All Rights Reserved.",
+  "license": "SEE LICENSE IN LICENSE",
+  "private": true,
+  "appId": "com.queuesystem.app",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "build": "electron-builder"
+  },
+  "dependencies": {
+    "piratetok-live-js": "^0.1.5"
+  },
+  "devDependencies": {
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "com.queuesystem.app",
+    "productName": "Queue System",
+    "copyright": "Copyright © 2026 RzkyyDev",
+    "win": {
+      "icon": "src/renderer/assets/build/icon.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    },
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "**/*",
+      "!.user_data",
+      "!dist"
+    ]
+  }
+}

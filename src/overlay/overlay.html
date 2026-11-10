@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Queue Overlay</title>
+    <link rel="stylesheet" href="overlay.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="overlay-container" class="overlay-container hidden">
+        <div id="minimal-card" class="card">
+            
+            <!-- Empty State -->
+            <div id="empty-state" class="empty-state hidden">
+                <div class="empty-icon">
+                    <svg class="cassette-tape stopped" viewBox="0 0 100 64" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="4" y="4" width="92" height="56" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+                        <rect x="14" y="14" width="72" height="24" rx="2" fill="#ef4444"/>
+                        <rect x="26" y="18" width="48" height="16" rx="2" fill="#111"/>
+                        <g class="gear" style="transform-origin: 34px 26px;">
+                            <circle cx="34" cy="26" r="6" fill="#222"/>
+                            <circle cx="34" cy="22" r="1.5" fill="#fff"/><circle cx="34" cy="30" r="1.5" fill="#fff"/><circle cx="30" cy="26" r="1.5" fill="#fff"/><circle cx="38" cy="26" r="1.5" fill="#fff"/>
+                        </g>
+                        <g class="gear" style="transform-origin: 66px 26px;">
+                            <circle cx="66" cy="26" r="6" fill="#222"/>
+                            <circle cx="66" cy="22" r="1.5" fill="#fff"/><circle cx="66" cy="30" r="1.5" fill="#fff"/><circle cx="62" cy="26" r="1.5" fill="#fff"/><circle cx="70" cy="26" r="1.5" fill="#fff"/>
+                        </g>
+                        <path d="M 22 46 L 78 46 L 84 56 L 16 56 Z" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                        <circle cx="26" cy="51" r="1.5" fill="#fff"/>
+                        <circle cx="74" cy="51" r="1.5" fill="#fff"/>
+                    </svg>
+                </div>
+                <div class="empty-title">No Queue</div>
+                <div class="empty-subtitle">Waiting for next request...</div>
+            </div>
+
+            <!-- Content State -->
+            <div id="content-state">
+                <!-- Now Playing -->
+                <div id="np-container" class="np-container hidden song-anim">
+                    <div class="np-header">ANTREAN - NOW PLAYING</div>
+                    <div class="np-main">
+                        <div id="np-icon" class="np-icon">
+                            <svg class="cassette-tape" viewBox="0 0 100 64" xmlns="http://www.w3.org/2000/svg">
+                                <rect x="4" y="4" width="92" height="56" rx="6" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="1.5"/>
+                                <rect x="14" y="14" width="72" height="24" rx="2" fill="#ef4444"/>
+                                <rect x="26" y="18" width="48" height="16" rx="2" fill="#111"/>
+                                <g class="gear" style="transform-origin: 34px 26px;">
+                                    <circle cx="34" cy="26" r="6" fill="#222"/>
+                                    <circle cx="34" cy="22" r="1.5" fill="#fff"/><circle cx="34" cy="30" r="1.5" fill="#fff"/><circle cx="30" cy="26" r="1.5" fill="#fff"/><circle cx="38" cy="26" r="1.5" fill="#fff"/>
+                                </g>
+                                <g class="gear" style="transform-origin: 66px 26px;">
+                                    <circle cx="66" cy="26" r="6" fill="#222"/>
+                                    <circle cx="66" cy="22" r="1.5" fill="#fff"/><circle cx="66" cy="30" r="1.5" fill="#fff"/><circle cx="62" cy="26" r="1.5" fill="#fff"/><circle cx="70" cy="26" r="1.5" fill="#fff"/>
+                                </g>
+                                <path d="M 22 46 L 78 46 L 84 56 L 16 56 Z" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.15)" stroke-width="1"/>
+                                <circle cx="26" cy="51" r="1.5" fill="#fff"/>
+                                <circle cx="74" cy="51" r="1.5" fill="#fff"/>
+                            </svg>
+                        </div>
+                        <div class="np-info">
+                            <div class="marquee-wrapper">
+                                <div id="np-title" class="np-title">-</div>
+                            </div>
+                            <div class="np-bottom">
+                                <div id="np-req" class="np-req">-</div>
+                                <div id="np-badge" class="badge badge-fast hidden">Fast</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Queue Slots -->
+                <div id="q-container" class="q-container hidden">
+                    <div class="q-separator"></div>
+                    <div class="q-list">
+                        <!-- Slots injected here by JS -->
+                    </div>
+                    <div id="q-more" class="q-more hidden">+5 more...</div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <script src="overlay.js"></script>
+</body>
+</html>

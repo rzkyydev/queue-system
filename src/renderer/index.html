@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Queue System</title>
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Custom Title Bar -->
+    <div class="title-bar" id="title-bar">
+        <div class="tb-left">
+            <img src="assets/build/icon.png" class="icon-mono tb-icon-img" alt="logo">
+            <span class="tb-title">Queue System</span>
+        </div>
+        <div class="tb-drag">
+            <span>Drag to move window</span>
+        </div>
+        <!-- Right side is handled natively by Electron's titleBarOverlay -->
+        <div class="tb-right-placeholder"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <img src="assets/build/icon.png" class="sidebar-logo" alt="logo" width="40" height="40">
+            </div>
+            
+            <nav class="sidebar-nav">
+                <button class="nav-btn active" data-target="overview">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Overview
+                </button>
+                <button class="nav-btn" data-target="dashboard">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    Queue
+                </button>
+                <button class="nav-btn" data-target="settings">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                    Settings
+                </button>
+                <button class="nav-btn" data-target="about">
+                    <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    About
+                </button>
+            </nav>
+            
+            <div class="sidebar-bottom">
+                <div class="sb-status-card panel">
+                    <div class="sb-status-header">
+                        <span class="status-dot dot-gray" id="side-status-dot"></span>
+                        <span class="sb-title" id="side-status-title">Failed</span>
+                    </div>
+                    <div class="sb-sub" id="side-status-sub">Connection error</div>
+                    <button class="btn btn-primary btn-block mt-3 hidden" id="side-retry-btn">Retry Connect</button>
+                </div>
+                <div class="sidebar-author">
+                    <div>Made by RzkyyDev</div>
+                    <div class="text-muted">v1.2.0</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- OVERVIEW VIEW -->
+            <div id="overview" class="view active">
+                <div class="ov-header">
+                    <div>
+                        <h2>Overview</h2>
+                        <p>Welcome back! Here's what's happening.</p>
+                    </div>
+                    <button class="btn btn-secondary" id="btn-ov-refresh">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                        Refresh
+                    </button>
+                </div>
+
+                <!-- First Row: 3 Cards -->
+                <div class="grid-3 mb-4">
+                    <!-- Connection -->
+                    <div class="panel p-card">
+                        <div class="pc-header">
+                            <div class="pc-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                            </div>
+                            <div class="pc-title-area">
+                                <h3>Connection</h3>
+                                <div class="pc-status">
+                                    <span class="status-dot dot-gray" id="ov-status-dot"></span>
+                                    <span id="ov-status-title">Failed</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pc-sub mb-3" id="ov-status-sub">Connection error</div>
+                        <input type="text" class="input input-ov-user mb-3" id="ov-tiktok-username" placeholder="Username">
+                        <button class="btn btn-primary btn-block" id="ov-connect-btn">Retry Connect</button>
+                    </div>
+                    
+                    <!-- Queue -->
+                    <div class="panel p-card">
+                        <div class="pc-header">
+                            <div class="pc-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                            </div>
+                            <div class="pc-title-area">
+                                <h3>Queue</h3>
+                            </div>
+                        </div>
+                        <div class="pc-body flex-center-left mt-2">
+                            <div class="pc-big-num" id="ov-queue-count">0</div>
+                            <div class="pc-big-text">Songs in queue</div>
+                        </div>
+                        <div class="mt-auto">
+                            <span class="badge" id="ov-fast-track-count">0 Fast Track</span>
+                        </div>
+                    </div>
+
+                    <!-- Overlay -->
+                    <div class="panel p-card">
+                        <div class="pc-header">
+                            <div class="pc-icon">
+                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                            </div>
+                            <div class="pc-title-area">
+                                <h3>Overlay</h3>
+                            </div>
+                        </div>
+                        <div class="pc-status mt-2 mb-2">
+                            <span class="status-dot dot-gray" id="ov-overlay-dot"></span>
+                            <span id="ov-overlay-title">Offline</span>
+                        </div>
+                        <div class="pc-sub mb-4" id="ov-overlay-sub">Waiting for connection</div>
+                        
+                        <div class="url-input-group mt-auto">
+                            <input type="text" class="input" value="http://127.0.0.1:3333/overlay" readonly>
+                            <button class="btn btn-secondary btn-icon btn-copy-url" title="Copy URL">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                            </button>
+                            <button class="btn btn-secondary btn-icon btn-open-url" title="Open Browser">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Second Row: Now Playing Full Width -->
+                <div class="panel p-card np-full-card mb-4">
+                    <div class="np-left">
+                        <div class="np-art">
+                            <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                        </div>
+                        <div class="np-info">
+                            <div class="np-label">Now Playing</div>
+                            <div class="np-title" id="ov-np-title">Nothing playing</div>
+                            <div class="np-req" id="ov-np-req">-</div>
+                        </div>
+                    </div>
+                    <div class="np-right" id="ov-np-actions">
+                        <button class="btn btn-secondary btn-large hidden" id="ov-btn-open-queue">Open Queue</button>
+                        <button class="btn btn-primary btn-large hidden" id="ov-btn-add-song">Add Song</button>
+                        <button class="btn btn-secondary btn-large" id="ov-btn-skip">Skip</button>
+                        <button class="btn btn-primary btn-large" id="ov-btn-done">Done</button>
+                    </div>
+                </div>
+
+                <!-- Third Row: Recent Activity & Quick Commands -->
+                <div class="grid-2-async">
+                    <div class="panel p-card">
+                        <div class="pc-header-spread">
+                            <div class="pc-title-group">
+                                <div class="pc-icon-small" style="color:var(--accent)">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                                </div>
+                                <h3>Recent Activity</h3>
+                            </div>
+                            <button class="btn btn-secondary btn-sm" id="btn-view-all-activity">View All</button>
+                        </div>
+                        <div class="activity-list mt-3" id="recent-activity-list">
+                            <!-- Injected by JS -->
+                            <div class="text-muted" style="text-align:center; padding: 20px;">No recent activity</div>
+                        </div>
+                    </div>
+
+                    <div class="panel p-card">
+                        <div class="pc-header-spread">
+                            <div class="pc-title-group">
+                                <div class="pc-icon-small" style="color:var(--accent)">
+                                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                                </div>
+                                <h3>Quick Commands</h3>
+                            </div>
+                        </div>
+                        
+                        <div class="cmd-grid-card mt-3">
+                            <div class="cmd-card">
+                                <h4>!song</h4>
+                                <p>Request a song</p>
+                            </div>
+                            <div class="cmd-card">
+                                <h4>!fastsong <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:var(--accent)"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg></h4>
+                                <p>Fast track a song</p>
+                            </div>
+                            <div class="cmd-card">
+                                <h4>!queue</h4>
+                                <p>Show queue</p>
+                            </div>
+                            <div class="cmd-card">
+                                <h4>!skip</h4>
+                                <p>Skip current song</p>
+                            </div>
+                            <div class="cmd-card">
+                                <h4>!done</h4>
+                                <p>Mark as done</p>
+                            </div>
+                            <div class="cmd-card">
+                                <h4>!remove</h4>
+                                <p>Remove a song</p>
+                            </div>
+                        </div>
+                        <div class="pc-sub mt-4 text-muted">Type these in TikTok Live chat</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD VIEW (Queue Management) -->
+            <div id="dashboard" class="view">
+                <div class="queue-layout">
+                    <!-- Left Column: Controls & List -->
+                    <div class="queue-main panel p-card">
+                        <div class="queue-header">
+                            <div class="qh-title-area">
+                                <h3>Queue</h3>
+                            </div>
+                            <div class="qh-tools">
+                                <div class="search-box">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                                    <input type="text" id="queue-search" placeholder="Search songs or requester...">
+                                </div>
+                                <button class="btn btn-secondary btn-icon" id="btn-clear-queue" title="Clear Queue">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="queue-list-container">
+                            <ul id="queue-list" class="queue-list">
+                                <!-- Items injected by JS -->
+                            </ul>
+                            <div id="empty-queue-msg" class="empty-msg">
+                                <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="var(--border-hover)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M8 12h8"></path></svg>
+                                <h3>Queue is empty</h3>
+                                <p class="text-muted">Waiting for requests from Manual OR Chat Live.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Now Playing & Add -->
+                    <div class="queue-side">
+                        <div class="panel p-card">
+                            <h3 class="mb-3">Now Playing</h3>
+                            <div id="now-playing-content" class="np-box empty">
+                                <div class="np-visual">
+                                    <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                                </div>
+                                <div class="np-info text-center mt-3 mb-4">
+                                    <div class="np-title" id="np-title">Nothing playing</div>
+                                    <div class="np-req text-muted mt-1" id="np-requester">Waiting for the next request.</div>
+                                </div>
+                                <div class="np-controls" id="q-np-controls">
+                                    <button class="btn btn-secondary" id="btn-skip">Skip</button>
+                                    <button class="btn btn-primary" id="btn-done">Done</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="panel p-card">
+                            <h3 class="mb-3">Manual Request</h3>
+                            <div class="add-form">
+                                <input type="text" class="input" id="input-song" placeholder="Song Title">
+                                <input type="text" class="input" id="input-requester" placeholder="@username (optional)">
+                                <label class="checkbox-label mt-1 mb-2">
+                                    <input type="checkbox" id="input-fasttrack"> Fast Track
+                                </label>
+                                <button class="btn btn-secondary btn-block" id="btn-add-song">Add Song</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS VIEW -->
+            <div id="settings" class="view">
+                <div class="settings-layout">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                        <h2 class="mb-0">Settings</h2>
+                        <button class="btn btn-primary" id="btn-save-settings">Save All Settings</button>
+                    </div>
+
+                    <!-- General -->
+                    <div class="panel p-card mb-4">
+                        <h3 class="mb-3">Connection & Behavior</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Auto Play Next Song</div>
+                                <div class="setting-desc">Automatically set next song as playing when marked as Done.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-autoplay"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Save Queue Automatically</div>
+                                <div class="setting-desc">Queue data saves silently in the background.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-savequeue"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Restore Queue On Startup</div>
+                                <div class="setting-desc">Loads previous session data on app launch.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-restorequeue"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Permissions -->
+                    <div class="panel p-card mb-4">
+                        <h3 class="mb-3">Permissions</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Permission Mode</div>
+                                <div class="setting-desc">Control who is allowed to use chat commands.</div>
+                            </div>
+                            <div class="setting-action">
+                                <select class="select" id="set-perm-mode">
+                                    <option value="disabled">Disabled (Everyone)</option>
+                                    <option value="mod_only">Moderators Only</option>
+                                    <option value="whitelist">Whitelist Only</option>
+                                    <option value="mod_or_whitelist">Moderators OR Whitelist</option>
+                                    <option value="everyone">Everyone</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="setting-row align-top dynamic-row hidden" id="row-whitelist">
+                            <div class="setting-info">
+                                <div class="setting-title">Username Whitelist</div>
+                                <div class="setting-desc">Enter allowed usernames separated by line breaks. (No @ needed).</div>
+                            </div>
+                            <div class="setting-action">
+                                <textarea class="textarea" id="set-perm-whitelist" spellcheck="false" rows="4"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overlay -->
+                    <div class="panel p-card mb-4">
+                        <h3 class="mb-3">Overlay Display</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Show Now Playing</div>
+                                <div class="setting-desc">Displays currently playing song artwork and title.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-ov-nowplaying"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Show Queue List</div>
+                                <div class="setting-desc">Displays upcoming requested songs.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-ov-queue"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Show Requester Username</div>
+                                <div class="setting-desc">Shows the username who requested the song.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-ov-requester"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Show Fast Track Badge</div>
+                                <div class="setting-desc">Displays red Fast Track badge for priority requests.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-ov-fasttrack"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Overlay Auto Hide</div>
+                                <div class="setting-desc">Hide overlay automatically when queue is completely empty.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-ov-autohide"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Queue Display Count</div>
+                                <div class="setting-desc">Maximum number of upcoming songs shown in Overlay.</div>
+                            </div>
+                            <div class="setting-action row-controls">
+                                <span class="val-text" id="val-queue-count">5</span>
+                                <input type="range" class="range" id="set-ov-count" min="1" max="10" value="5">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel p-card mb-4">
+                        <h3 class="mb-3">Overlay Animations</h3>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Rotate Cassette</div>
+                                <div class="setting-desc">Spin the cassette tape artwork continuously.</div>
+                            </div>
+                            <div class="setting-action">
+                                <label class="toggle-switch"><input type="checkbox" id="set-ov-cassette"><span class="slider"></span></label>
+                            </div>
+                        </div>
+                        <div class="setting-row">
+                            <div class="setting-info">
+                                <div class="setting-title">Animation Speed</div>
+                                <div class="setting-desc">Changes cassette rotation speed.</div>
+                            </div>
+                            <div class="setting-action">
+                                <select class="select" id="set-ov-speed">
+                                    <option value="Slow">Slow</option>
+                                    <option value="Normal">Normal</option>
+                                    <option value="Fast">Fast</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Commands -->
+                    <div class="panel p-card">
+                        <h3 class="mb-3">Command Aliases</h3>
+                        <p class="text-muted mb-4 text-sm">Define alternative keywords for chat commands. Separate multiple with commas.</p>
+                        <div class="cmd-list" id="commands-container">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ABOUT VIEW -->
+            <div id="about" class="view">
+                <div class="about-card panel p-card">
+                    <div class="about-icon mb-4">
+                        <img src="assets/build/icon.png" class="icon-mono" alt="logo" width="64" height="64">
+                    </div>
+                    <h2 class="about-title mb-1">Queue System</h2>
+                    <div class="about-version text-muted mb-4">Version 1.2.0</div>
+                    <p class="about-desc mb-4 text-muted" style="line-height: 1.6;">
+                        A modern, lightweight, and fast song queue manager for Livestream.
+                        Designed to look beautiful out-of-the-box for Overlay Stream.
+                    </p>
+                    <div class="about-links flex-center-row gap-3">
+                        <button class="btn btn-secondary" onclick="window.open('https://kikii.qzz.io', '_blank')">Website</button>
+                        <button class="btn btn-secondary" onclick="window.open('https://discord.gg/25e3spWdaM', '_blank')">Discord</button>
+                    </div>
+                </div>
+            </div>
+            
+        </main>
+        
+        <!-- Mobile Bottom Navigation -->
+        <nav class="mobile-nav">
+            <button class="nav-btn active" data-target="overview">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                <span>Overview</span>
+            </button>
+            <button class="nav-btn" data-target="dashboard">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                <span>Queue</span>
+            </button>
+            <button class="nav-btn" data-target="settings">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span>Settings</span>
+            </button>
+            <button class="nav-btn" data-target="about">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                <span>About</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- ONBOARDING WELCOME MODAL -->
+    <div id="welcome-modal-overlay" class="modal-overlay hidden">
+        <div class="modal">
+            <h2 class="mb-3">Welcome to Queue System!</h2>
+            <div class="mb-4 text-muted" style="line-height: 1.6; font-size: 15px;">
+                <p class="mb-2"><strong>Queue System</strong> is a fast, responsive, and minimalist queue management tool for Streaming.</p>
+                <p>Use the sidebar to navigate between your Overview dashboard, Queue list, and Settings.</p>
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" id="btn-welcome-start">OK</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ACTIVITY HISTORY MODAL -->
+    <div id="activity-modal-overlay" class="modal-overlay hidden">
+        <div class="modal" style="max-width: 500px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 class="mb-0">Activity History</h2>
+                <button class="btn btn-secondary" id="btn-clear-activity">Clear History</button>
+            </div>
+            
+            <div class="activity-list" id="full-activity-list" style="max-height: 400px; overflow-y: auto; padding-right: 8px;">
+                <!-- Full history injected here -->
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+                <button class="btn btn-primary" id="btn-activity-close">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Custom Dialog Modal -->
+    <div id="modal-container" class="modal-overlay hidden">
+        <div id="modal-box" class="modal-box panel p-card">
+            <h3 id="modal-title" class="mb-2">Title</h3>
+            <p id="modal-message" class="text-muted mb-4 text-sm" style="line-height: 1.5;">Message</p>
+            <div id="modal-actions" class="flex-row gap-2 justify-end"></div>
+        </div>
+    </div>
+    
+    <script type="module" src="app.js"></script>
+</body>
+</html>
