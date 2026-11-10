@@ -54,11 +54,20 @@ Less time managing requests, more time focusing on your stream.
 
 ## Screenshots
 
-<!-- Add your application screenshots here -->
+## Screenshots
 
 <p align="center">
-  <i>Application screenshots coming soon.</i>
-</p>
+  <img src="https://raw.githubusercontent.com/rzkyydev/queue-system/main/screenshot/Screenshot%20(886).png" width="60%" alt="Dashboard">
+<br><br>
+  <img src="https://raw.githubusercontent.com/rzkyydev/queue-system/main/screenshot/Screenshot%20(887).png" width="60%" alt="Queue Management"><br><br>
+
+  <div align="center">
+  <a href="https://rzkyydev.github.io/queue-system/#overlay">
+    <img src="https://img.shields.io/badge/🚀_Open_Live_Overlay-d63062?style=for-the-badge&logoColor=white" alt="Open Live Overlay">
+  </a>
+  <br>
+  <sub>Preview and explore the live overlay directly in your browser.</sub>
+</div>
 
 ## Installation
 
