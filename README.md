@@ -54,8 +54,6 @@ Less time managing requests, more time focusing on your stream.
 
 ## Screenshots
 
-## Screenshots
-
 <p align="center">
   <img src="https://raw.githubusercontent.com/rzkyydev/queue-system/main/screenshot/Screenshot%20(886).png" width="60%" alt="Dashboard">
 <br><br>
