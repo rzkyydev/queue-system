@@ -1,7 +1,7 @@
 # Queue System
 
 <p align="center">
-  <img src="docs/icon.png" width="110" alt="Queue System Logo">
+  <img src="docs/icon-dark.png" width="110" alt="Queue System Logo">
 </p>
 
 <h3 align="center">A simple way to manage TikTok LIVE song requests.</h3>
